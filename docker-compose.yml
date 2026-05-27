@@ -1,0 +1,29 @@
+services:
+  melody:
+    build: .
+    container_name: melody-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - lavalink
+    volumes:
+      - ./data:/app/data
+    networks:
+      - melody-net
+
+  lavalink:
+    image: ghcr.io/lavalink-devs/lavalink:4
+    container_name: melody-lavalink
+    restart: unless-stopped
+    ports:
+      - "2333:2333"
+    volumes:
+      - ./lavalink/application.yml:/opt/Lavalink/application.yml:ro
+      - ./lavalink/plugins:/opt/Lavalink/plugins
+    networks:
+      - melody-net
+
+networks:
+  melody-net:
+    driver: bridge

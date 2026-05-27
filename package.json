@@ -1,0 +1,24 @@
+{
+    "name": "melody-discord-music-bot",
+    "version": "1.0.0",
+    "description": "Melody - a modern Discord music bot with rich embeds, playlists, stats, filters, and Vibe Rooms.",
+    "main": "src/index.js",
+    "scripts": {
+        "start": "node src/shard.js",
+        "start:single": "node src/index.js",
+        "dev": "node src/shard.js",
+        "commands": "node src/register-commands.js",
+        "check": "node --check src/index.js && node --check src/shard.js"
+    },
+    "engines": {
+        "node": ">=22.12.0 <24"
+    },
+    "dependencies": {
+        "better-sqlite3": "^12.10.0",
+        "discord.js": "^14.26.4",
+        "dotenv": "^16.5.0",
+        "lavalink-client": "^2.10.2",
+        "pino": "^9.7.0",
+        "pino-pretty": "^13.0.0"
+    }
+}
