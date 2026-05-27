@@ -18,32 +18,29 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    ports:
-      - "${NODELINK_PUBLIC_PORT:-2333}:2333"
+    expose:
+      - "2333"
     environment:
       NODELINK_SERVER_HOST: "0.0.0.0"
       NODELINK_SERVER_PORT: "2333"
       NODELINK_SERVER_PASSWORD: "${NODELINK_PASSWORD}"
 
-      # 0 = use all available workers. Set NODELINK_CLUSTER_ENABLED=false
-      # if you want the simplest possible single-process setup while testing.
-      NODELINK_CLUSTER_ENABLED: "${NODELINK_CLUSTER_ENABLED:-true}"
-      NODELINK_CLUSTER_WORKERS: "${NODELINK_CLUSTER_WORKERS:-0}"
+      NODELINK_CLUSTER_ENABLED: "true"
+      NODELINK_CLUSTER_WORKERS: "0"
 
-      NODELINK_SOURCES_YOUTUBE_ENABLED: "${NODELINK_SOURCES_YOUTUBE_ENABLED:-true}"
-      NODELINK_SOURCES_SOUNDCLOUD_ENABLED: "${NODELINK_SOURCES_SOUNDCLOUD_ENABLED:-true}"
+      NODELINK_SOURCES_YOUTUBE_ENABLED: "true"
+      NODELINK_SOURCES_SOUNDCLOUD_ENABLED: "true"
 
-      NODELINK_SOURCES_SPOTIFY_ENABLED: "${NODELINK_SOURCES_SPOTIFY_ENABLED:-false}"
+      NODELINK_SOURCES_SPOTIFY_ENABLED: "${SPOTIFY_ENABLED:-false}"
       NODELINK_SOURCES_SPOTIFY_CLIENTID: "${SPOTIFY_CLIENT_ID:-}"
       NODELINK_SOURCES_SPOTIFY_CLIENTSECRET: "${SPOTIFY_CLIENT_SECRET:-}"
 
       NODELINK_DEFAULTSEARCHSOURCE: '["youtube", "soundcloud"]'
       NODELINK_UNIFIEDSEARCHSOURCES: '["youtube", "soundcloud"]'
-      NODELINK_LOGGING_LEVEL: "${NODELINK_LOGGING_LEVEL:-info}"
+      NODELINK_LOGGING_LEVEL: "info"
     volumes:
       - ./nodelink/logs:/app/logs
       - ./nodelink/.cache:/app/.cache
-      - ./local-music:/app/music
     networks:
       - melody-net
 
