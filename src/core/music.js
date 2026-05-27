@@ -1,5 +1,5 @@
 const crypto = require("node:crypto");
-const { LavalinkManager } = require("lavalink-client");
+const { LavalinkManager, NodeType, NodeLinkDefaultSources } = require("lavalink-client");
 const config = require("../config");
 const { logger } = require("./logger");
 const { applyFilter } = require("./filters");
@@ -40,7 +40,7 @@ async function tryCall(player, names, ...args) {
  * @returns {LavalinkManager}
  */
 function createLavalink(client) {
-    return new LavalinkManager({
+    const manager = new LavalinkManager({
         nodes: [{
             id: config.lavalink.id,
             host: config.lavalink.host,
@@ -48,6 +48,7 @@ function createLavalink(client) {
             authorization: config.lavalink.authorization,
             secure: config.lavalink.secure,
             requestTimeout: config.lavalink.requestTimeout,
+            nodeType: NodeType?.NodeLink || "nodelink",
 
             retryAmount: 999,
             retryDelay: 10000,
@@ -76,6 +77,14 @@ function createLavalink(client) {
             maxPreviousTracks: 40
         }
     });
+
+    // NodeLink exposes a few extra source prefixes. This keeps normal
+    // ytsearch/spotify/etc working while letting us opt into those later.
+    if (NodeLinkDefaultSources) {
+        manager.utils.SourcesRecord = NodeLinkDefaultSources;
+    }
+
+    return manager;
 }
 
 /**
@@ -652,23 +661,23 @@ function cleanNode(node) {
  */
 function bindLavalinkEvents(client) {
     client.lavalink.nodeManager.on("create", (node) => {
-        logger.info({ node: cleanNode(node) }, "Lavalink node created");
+        logger.info({ node: cleanNode(node) }, "NodeLink node created");
     });
 
     client.lavalink.nodeManager.on("connect", (node) => {
-        logger.info({ node: cleanNode(node) }, "Lavalink node connected");
+        logger.info({ node: cleanNode(node) }, "NodeLink node connected");
     });
 
     client.lavalink.nodeManager.on("disconnect", (node, reason) => {
-        logger.warn({ node: cleanNode(node), reason }, "Lavalink node disconnected");
+        logger.warn({ node: cleanNode(node), reason }, "NodeLink node disconnected");
     });
 
     client.lavalink.nodeManager.on("reconnecting", (node) => {
-        logger.warn({ node: cleanNode(node) }, "Lavalink node reconnecting");
+        logger.warn({ node: cleanNode(node) }, "NodeLink node reconnecting");
     });
 
     client.lavalink.nodeManager.on("reconnectinprogress", (node) => {
-        logger.warn({ node: cleanNode(node) }, "Lavalink node reconnect in progress");
+        logger.warn({ node: cleanNode(node) }, "NodeLink node reconnect in progress");
     });
 
     client.lavalink.nodeManager.on("error", (node, error, payload) => {
@@ -678,12 +687,12 @@ function bindLavalinkEvents(client) {
                 error: cleanNodeError(error),
                 payload
             },
-            "Lavalink node error"
+            "NodeLink node error"
         );
     });
 
     client.lavalink.nodeManager.on("destroy", (node) => {
-        logger.warn({ node: cleanNode(node) }, "Lavalink node destroyed");
+        logger.warn({ node: cleanNode(node) }, "NodeLink node destroyed");
     });
 
     client.lavalink.on("trackStart", async (player, track) => {

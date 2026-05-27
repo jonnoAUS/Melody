@@ -20,6 +20,19 @@ function int(value, fallback) {
     return Number.isFinite(parsed) ? parsed : fallback;
 }
 
+/**
+ * @param {string[]} names
+ * @returns {string | undefined}
+ */
+function firstEnv(names) {
+    for (const name of names) {
+        const value = process.env[name];
+        if (value != null && value !== "") return value;
+    }
+
+    return undefined;
+}
+
 module.exports = {
     token: process.env.DISCORD_TOKEN,
     clientId: process.env.DISCORD_CLIENT_ID,
@@ -29,12 +42,14 @@ module.exports = {
     dataPath: process.env.DATA_PATH || "./data/melody.sqlite",
     logLevel: process.env.LOG_LEVEL || "info",
 
+    // Kept as `lavalink` so the rest of the bot does not need a dumb rename pass.
+    // The actual server behind it is NodeLink.
     lavalink: {
-        id: "melody-main",
-        host: process.env.LAVALINK_HOST || "127.0.0.1",
-        port: int(process.env.LAVALINK_PORT, 2333),
-        authorization: process.env.LAVALINK_PASSWORD || "notgettingmypassworddickhead",
-        secure: bool(process.env.LAVALINK_SECURE, false),
-        requestTimeout: 15000
+        id: firstEnv(["NODELINK_NODE_ID", "LAVALINK_NODE_ID"]) || "melody-nodelink",
+        host: firstEnv(["NODELINK_HOST", "LAVALINK_HOST"]) || "nodelink",
+        port: int(firstEnv(["NODELINK_PORT", "LAVALINK_PORT"]), 2333),
+        authorization: firstEnv(["NODELINK_PASSWORD", "LAVALINK_PASSWORD"]) || "youshallnotpass",
+        secure: bool(firstEnv(["NODELINK_SECURE", "LAVALINK_SECURE"]), false),
+        requestTimeout: int(process.env.NODELINK_REQUEST_TIMEOUT, 15000)
     }
 };

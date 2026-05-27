@@ -8,7 +8,7 @@
         "start:single": "node src/index.js",
         "dev": "node src/shard.js",
         "commands": "node src/register-commands.js",
-        "check": "node --check src/index.js && node --check src/shard.js"
+        "check": "node --check src/config.js && node --check src/index.js && node --check src/shard.js && node --check src/core/music.js"
     },
     "engines": {
         "node": ">=22.12.0 <24"

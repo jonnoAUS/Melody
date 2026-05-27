@@ -6,7 +6,6 @@ COPY package*.json ./
 RUN npm ci --omit=dev
 
 COPY src ./src
-COPY lavalink ./lavalink
 
 ENV NODE_ENV=production
 

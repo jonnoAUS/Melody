@@ -90,9 +90,9 @@ function createClient() {
         try {
             await client.lavalink.init({ ...client.user });
 
-            logger.info("Lavalink client initialized");
+            logger.info("NodeLink client initialized");
         } catch (error) {
-            logger.error({ error: cleanError(error) }, "Lavalink init failed");
+            logger.error({ error: cleanError(error) }, "NodeLink init failed");
         }
 
         client.user.setPresence({
