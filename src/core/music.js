@@ -42,13 +42,13 @@ async function tryCall(player, names, ...args) {
 function createLavalink(client) {
     const manager = new LavalinkManager({
         nodes: [{
-            id: config.lavalink.id,
-            host: config.lavalink.host,
-            port: config.lavalink.port,
-            authorization: config.lavalink.authorization,
-            secure: config.lavalink.secure,
-            requestTimeout: config.lavalink.requestTimeout,
-            nodeType: NodeType?.NodeLink || "nodelink",
+            id: config.nodelink.id,
+            host: config.nodelink.host,
+            port: config.nodelink.port,
+            authorization: config.nodelink.authorization,
+            secure: config.nodelink.secure,
+            requestTimeout: config.nodelink.requestTimeout,
+            nodeType: NodeType.NodeLink,
 
             retryAmount: 999,
             retryDelay: 10000,
@@ -78,11 +78,8 @@ function createLavalink(client) {
         }
     });
 
-    // NodeLink exposes a few extra source prefixes. This keeps normal
-    // ytsearch/spotify/etc working while letting us opt into those later.
-    if (NodeLinkDefaultSources) {
-        manager.utils.SourcesRecord = NodeLinkDefaultSources;
-    }
+    // NodeLink has a few extra source prefixes compared to plain Lavalink.
+    manager.utils.SourcesRecord = NodeLinkDefaultSources;
 
     return manager;
 }

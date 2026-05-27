@@ -42,14 +42,12 @@ module.exports = {
     dataPath: process.env.DATA_PATH || "./data/melody.sqlite",
     logLevel: process.env.LOG_LEVEL || "info",
 
-    // Kept as `lavalink` so the rest of the bot does not need a dumb rename pass.
-    // The actual server behind it is NodeLink.
-    lavalink: {
-        id: firstEnv(["NODELINK_NODE_ID", "LAVALINK_NODE_ID"]) || "melody-nodelink",
-        host: firstEnv(["NODELINK_HOST", "LAVALINK_HOST"]) || "nodelink",
-        port: int(firstEnv(["NODELINK_PORT", "LAVALINK_PORT"]), 2333),
-        authorization: firstEnv(["NODELINK_PASSWORD", "LAVALINK_PASSWORD"]) || "youshallnotpass",
-        secure: bool(firstEnv(["NODELINK_SECURE", "LAVALINK_SECURE"]), false),
-        requestTimeout: int(process.env.NODELINK_REQUEST_TIMEOUT, 15000)
+    nodelink: {
+        id: "melody-nodelink",
+        host: process.env.NODELINK_HOST || "nodelink",
+        port: int(process.env.NODELINK_PORT, 2333),
+        authorization: process.env.NODELINK_PASSWORD || "change-this-password",
+        secure: bool(process.env.NODELINK_SECURE, false),
+        requestTimeout: 15000
     }
 };
